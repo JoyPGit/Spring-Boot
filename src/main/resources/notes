@@ -1,0 +1,92 @@
+https://stackoverflow.com/questions/54137286/error-java-invalid-target-release-11-intellij-idea
+Structure->Modules ->> Language level to 8 ( my maven project was set to 1.8 java)
+AND
+File -> Settings -> Build, Execution, Deployment -> Compiler -> Java Compiler -> 8
+
+also change in pom.xml
+<properties>
+    <java.version>8</java.version>
+</properties>
+
+Close IntelliJ
+Go to the directory of the project
+Delete the .idea/ directory
+Start IntelliJ with the project's directory
+
+
+----------
+for new oracle table
+CREATE USER davy_jones IDENTIFIED BY voltsit5;
+GRANT CREATE TABLE TO davy_jones;
+GRANT CREATE SESSION TO davy_jones;
+SELECT username, account_status FROM dba_users WHERE username = 'davy_jones';
+
+used ojdbc
+
+// shows the sql queries generated
+spring.jpa.show-sql:true
+
+spring.jpa.hibernate.ddl-auto=update
+this is needed to auto create tables, if defined
+in entity, make sure to comment in production
+
+
+https://stackoverflow.com/questions/56379708/error-while-testing-found-multiple-
+declaration-of-bootstrapwith-for-test-class
+
+
+-- @Builder 
+use in entity, so builder pattern can be used for objcet creation
+
+----- embedded and embeddable to map diff repos
+-- hwo to create an entity now with linking b/w diff repos?
+@AttributeOverrides
+
+
+if multiple annotations are used 
+@SpringBootTest
+// once operation is completed it flushes the data
+//@DataJpaTest
+
+error comes up : Test ignored.
+
+java.lang.IllegalStateException: Configuration error: found multiple declarations of @BootstrapWith for test class
+
+pring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+
+
+---- mappings
+course material miust have mapping to a course
+
+why are teste cases runing slow?
+MockMvc might help.
+
+object references an unsaved transient reference
+-> reference constraint -> Cascading
+
+
+eager fetching, lazy fetching
+@ToString(exclude = "course")
+
+if lazy fetching is used, only course material is logged and not course
+
+mappedBy
+
+one to many mapping teacher - courses
+
+@JoinColumn
+go for many to one relationship whenever possible
+
+going from one to many to many to one won't change the schema, just the representation
+
+for many to many relationship, a new table is needed. for on to many and many to one, 
+having a foreign key was enough.
+JoinTable vs JoinColumn
+normalization -> one column each from both tables
+
+org.springframework.data.domain.PageRequest cannot be cast to java.awt.print.Pageable
+
+You have imported class Pageable from java.awt.print.Pageable but you need Pageable from Spring's package: org.springframework.data.domain.Pageable
+
+
+what to return in case of delete?
