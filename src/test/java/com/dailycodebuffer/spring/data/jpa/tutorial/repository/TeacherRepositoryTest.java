@@ -27,7 +27,7 @@ public class TeacherRepositoryTest {
       .builder()
       .firstName("Qutub")
       .lastName("Khan")
-      .courses(new ArrayList<>(courseList))
+//      .courses(new ArrayList<>(courseList))
       .build();
 
     teacherRepository.save(teacher);

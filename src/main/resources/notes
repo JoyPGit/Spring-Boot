@@ -52,15 +52,16 @@ error comes up : Test ignored.
 
 java.lang.IllegalStateException: Configuration error: found multiple declarations of @BootstrapWith for test class
 
-pring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 
 
 ---- mappings
-course material miust have mapping to a course
+course material must have mapping to a course
 
-why are teste cases runing slow?
+why are test cases runing slow?
 MockMvc might help.
 
+TransientObjectException
 object references an unsaved transient reference
 -> reference constraint -> Cascading
 
@@ -77,9 +78,9 @@ one to many mapping teacher - courses
 @JoinColumn
 go for many to one relationship whenever possible
 
-going from one to many to many to one won't change the schema, just the representation
+going from one to many or many to one won't change the schema, just the representation
 
-for many to many relationship, a new table is needed. for on to many and many to one, 
+for many to many relationship, a new table is needed. for one to many and many to one, 
 having a foreign key was enough.
 JoinTable vs JoinColumn
 normalization -> one column each from both tables
@@ -90,3 +91,164 @@ You have imported class Pageable from java.awt.print.Pageable but you need Pagea
 
 
 what to return in case of delete?
+
+--- ojdbc
+
+Unfortunately due the binary license there is no public repository with the Oracle Driver JAR. This happens with many dependencies but is not Maven's fault. If you happen to find a public repository containing the JAR you can be sure that is illegal.
+
+Some JARs that can't be added due to license reasons have a pom entry in the Maven Central repo. 
+The jar in this case is ucp, download it and add externally.
+
+https://www.baeldung.com/spring-oracle-connection-pooling
+If we want to use advanced configurations, we need to explicitly define the DataSource bean and set the properties. Probably the easiest way of doing this is by using the @Configuration and @Bean annotations.
+
+Oracle Universal Connection Pool (UCP) for JDBC provides a full-featured implementation for caching JDBC connections. It reuses the connections instead of creating new ones. It also gives us a set of properties for customizing pool behavior.
+
+<dependency>
+    <groupId>com.oracle.database.jdbc</groupId>
+    <artifactId>ojdbc8</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.oracle.database.ha</groupId>
+    <artifactId>ons</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.oracle.database.jdbc</groupId>
+    <artifactId>ucp</artifactId>
+</dependency>
+
+
+tomcat-jdbc-pool vs cp030 vs ucp of oracle?
+ucp needs to be added as a jar.
+tomcat is better i think?
+Spring Boot will look for HikariCP on the classpath and use it by default when present
+If HikariCP is not found on the classpath, then Spring Boot will pick up the Tomcat JDBC Connection Pool, if it's available
+
+https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.sql.datasource
+11.1.4. Supported Connection Pools
+Spring Boot uses the following algorithm for choosing a specific implementation:
+
+1 We prefer HikariCP for its performance and concurrency. If HikariCP is available, we always choose it.
+2 Otherwise, if the Tomcat pooling DataSource is available, we use it.
+3 Otherwise, if Commons DBCP2 is available, we use it.
+4 If none of HikariCP, Tomcat, and DBCP2 are available and if Oracle UCP is available, we use it.
+
+IMP : https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.sql
+
+With Spring-Hibernate, you still had to configure the EntityManagerFactory.
+Now with Spring Boot, you don't need to configure it.
+
+https://mkyong.com/spring-boot/spring-boot-how-to-know-which-connection-pool-is-used/
+System.out.println("DATASOURCE = " + dataSource);
+
+---- JDBC
+JDBC stands for Java Database Connectivity. JDBC is a Java API to connect and execute the query with the database. It is a part of JavaSE (Java Standard Edition). JDBC API uses JDBC drivers to connect with the database. There are four types of JDBC drivers:
+
+see volt_query_automation repo -> pom.xml
+it uses ResultSet, Statement etc. which are specific to jdbc.
+Also it uses ojdbc driver which helps in connecting to Oracle db. 
+
+JDBC-ODBC Bridge Driver, Native Driver, Network Protocol Driver and Thin Driver.
+
+A list of popular classes of JDBC API are given below:
+
+DriverManager class, Blob class, Clob class, Types class
+
+
+Why Should We Use JDBC
+Before JDBC, ODBC API was the database API to connect and execute the query with the database. But, ODBC API uses ODBC driver which is written in C language (i.e. platform dependent and unsecured). That is why Java has defined its own API (JDBC API) that uses JDBC drivers (written in Java language).
+
+JDBC Driver is a software component that enables java application to interact with the database. There are 4 types of JDBC drivers:
+https://www.javatpoint.com/jdbc-driver
+
+The thin driver converts JDBC calls directly into the vendor-specific database protocol. That is why it is known as thin driver. It is fully written in Java language.
+
+
+https://stackoverflow.com/questions/16148188/whats-the-difference-between-jpa-and-spring-data-jpa
+Spring Data JPA provides a definition to implement repositories that are supported under the hood by referencing the JPA specification
+
+
+https://www.tutorialspoint.com/difference-between-jdbc-and-hibernate
+
+https://www.theserverside.com/video/Hibernate-vs-JDBC-How-do-these-database-APIs-differ
+The JDBC API was packaged as part of the Java Standard Edition (Java SE) ever since the 1997 release of JDK 1.1, and provides a collection of easy-to-use classes and methods that allow developers to write code that can connect to a wide range of databases.
+
+The Hibernate API then lets developers decorate their Java code with minimally obtrusive JPA annotations. Said annotations describe how a given Java class and its variables map to a given table and its columns within a database. 
+
+Hibernate and JPA-based applications do not eliminate the need for JDBC. When you use Hibernate, all database interactions still occur with the JDBC APIs. 
+IMP : Hibernate and JPA are actually built on top of the JDBC API.
+
+Hibernate is now simply one of many different implementations of the JPA specification.
+
+JPA is the EE standard specification for ORM in Java EE. Hibernate is also an implementation of this specification, in that you can use the standard JPA APIs and configure your application to use Hibernate as the provider of the spec under the covers.
+
+https://stackoverflow.com/questions/51923060/spring-jdbc-vs-spring-data-jdbc-and-what-are-they-supporting
+IMP : spring-jdbc is Spring's convenient abstraction over JDBC. It just provides all of the Spring abstractions over the plain JDBC DataSource that you can use with the Spring Framework.
+For example, Spring's DataSources (abstarction over jdbc DataSources) nicely hook into Spring's Transaction management capabilities, like the @Transactional annotation.
+
+https://stackoverflow.com/questions/52532319/spring-data-vs-spring-data-jpa-vs-jdbctemplate
+
+
+Use Spring JdbcTemplate if you don't want to access your database schema via a domain model. Using JPA you need to make sure that database schema maps correctly to the domain model.
+
+Performance is almost similar at both spring JdbcTemplate and JPA.
+
+JPA is the Java Persistence API, which is Java's standard API for object-relational mapping.
+
+The Spring Framework consists of a collection of projects, and one of these projects is Spring Data.
+
+The goal of Spring Data is to make it easier to work with different kinds of databases, from traditional relational databases to NoSQL databases. Spring Data supports JPA via the Spring Data JPA subproject.
+
+Spring Data connection pooling is used though
+
+https://www.developer.com/database/understanding-jdbc-connection-pooling/
+
+-- DATASOURCE
+A DataSource object provides a new way for JDBC clients to obtain a DBMS connection. 
+
+
+--- logs
+Registered driver with driverClassName=oracle.jdbc.driver.OracleDriver was not found, trying direct instantiation.
+
+ 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: junit:junit:jar -> duplicate declaration of version (?) @ line 61, column 15
+https://stackoverflow.com/questions/43816009/how-to-fix-this-no-goals-have-been-specified-for-this-build-on-maven
+
+
+using env var
+https://www.baeldung.com/properties-with-spring
+
+
+allow-bean-definition-overriding=true
+
+
+https://stackoverflow.com/questions/40046116/spring-boot-with-spring-transactional-works-without-enabling-transactional-mana
+Effectively if you are using spring-boot-starter-jdbc or spring-boot-starter-data-jpa, Spring Boot will configure a DataSource for you, start Hibernate (in the latter case) and configure transaction management.
+
+Not all "Enable" annotations require to be explicitly set. If you have a DataSource you must probably want to have transactions. If you have JPA you probably want a JpaTransactionManager. If we auto-configure that, the easiest way to use it is via @Transactional so we'll enable that in that case as well.
+
+@SpringBootApplication adds @EnableAutoConfiguration if it detects Spring Data JPA on your classpath. Also it registers PlatformTransactionManager - JpaTransactionManager, datasource, entitymanager, repositories etc.
+
+
+--- bin folder
+"Src" is the folder where the project's source files are located. For example, if you are working on a Java project, src folder and its sub folders would hold the .java files.
+"Bin" folder is usually where the compiled files are copied to. For example, this folder will have the .class, .jar etc files which are compiled.
+To describe this in another way, "src" folder contains the human readable code and "bin" contains the binary that the java virtual machine executes.
+
+.class file is bytecode
+Java applications are compiled into bytecode which is stored in class files and loaded in a JVM.
+JVM converts bytecode to machine code
+
+
+
+<dependency>
+    <groupId>com.airtelbank.common</groupId>
+    <artifactId>payments-hub-client-library</artifactId>
+    <version>1.0.0</version>
+    <scope>system</scope>
+    <systemPath>${basedir}/lib/payments-hub-client-library-1.0.0.jar</systemPath>
+</dependency>
+
+If adding jar in lib, add <scope> and <systemPath> tags.
+
+
+public <R, T> ResponseDTO<T> ?

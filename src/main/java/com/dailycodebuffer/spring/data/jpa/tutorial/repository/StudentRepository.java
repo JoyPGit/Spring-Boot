@@ -36,5 +36,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     ".email_address = :emailAddr",
     nativeQuery = true
   )
-  int update(String firstName, String emailAddr);
+  int update(@Param("firstName") String firstName, @Param("emailAddr") String emailAddr);
 }

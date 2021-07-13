@@ -30,6 +30,7 @@ public class Course {
   private Integer credit;
 
   // this says that one to one mapping is defined by the course attribute in CourseMaterial class
+  // one to one mapping has already been defined in COurseMaterial entity, no need to define again
   @OneToOne(mappedBy = "course")
   private CourseMaterial courseMaterial;
 
